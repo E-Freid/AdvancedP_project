@@ -1,7 +1,3 @@
-//
-// Created by Eli on 18/04/2022.
-//
-
 #include "tree.h"
 
 
@@ -129,5 +125,3 @@ void freeTreeRec(TreeNode* root){
         free(root);
     }
 }
-
-// test
