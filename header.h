@@ -1,0 +1,26 @@
+//
+// Created by Eli on 26/04/2022.
+//
+
+#ifndef PROJECT_HEADER_H
+#define PROJECT_HEADER_H
+
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#define NOT_FOUND -1
+#define TRUE 1
+#define FALSE 0
+#define MAX_LINE_LENGTH 151
+#define MEM_ERROR "MEMORY ALLOCATION ERROR! EXITING PROGRAM!"
+#define FILE_ERROR "FILE ERROR! EXITING PROGRAM!"
+
+typedef int BOOL;
+
+void checkAllocation(void* ptr);
+void checkOpen(FILE* f);
+char** txtToArray(char* filePath, int* size);
+void formatRawStr(char* str);
+
+#endif //PROJECT_HEADER_H
