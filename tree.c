@@ -23,7 +23,6 @@ TreeNode* createTreeNode(char* string, int id, TreeNode* left, TreeNode* right){
     TreeNode* node = (TreeNode*) malloc(sizeof(TreeNode));
     checkAllocation(node);
     node->instrument = string;
-    checkAllocation(node->instrument);
     node->insId = id;
     node->left = left;
     node->right = right;
@@ -82,28 +81,32 @@ InstrumentTree buildTreeFromFile(char* filePath){
 
 void insertStrToBinaryTree(InstrumentTree* tr, char* str, int id){
     TreeNode* newNode = createTreeNode(str, id, NULL, NULL);
-    InsertNodeToBST(tr->root, newNode);
+    InsertNodeToBST(tr, newNode);
 }
 
-void InsertNodeToBST(TreeNode* root, TreeNode* newNode){
+void InsertNodeToBST(InstrumentTree* tr, TreeNode* newNode) {
     int cmpr;
+    TreeNode *root = tr->root;
+    BOOL placedNode = FALSE;
 
-    if(!root){          // empty tree
-        root = newNode;
+    if (!root) {        // empty tree
+        tr->root = newNode;
+        return;
     }
-    else{
-        cmpr = strcmp(root->instrument, newNode->instrument);
 
-        if(cmpr < 0){       // newNode is smaller
-            if(!root->right)
-                root->right = newNode;  //  ptr is NULL, found location
-            else
-                root = root->right;     // ptr not NULL, keep going right
-        }
-        else{
-            if(!root->left)
+    while (root && !placedNode) {
+        cmpr = strcmp(root->instrument, newNode->instrument);
+        if (cmpr < 0) {         // newNode is smaller
+            if (!root->right) {
+                root->right = newNode;          //  ptr is NULL, found location
+                placedNode = TRUE;
+            } else
+                root = root->right;     // ptr not NULL, go right
+        } else {
+            if (!root->left) {
                 root->left = newNode;
-            else
+                placedNode = TRUE;
+            } else
                 root = root->left;
         }
     }

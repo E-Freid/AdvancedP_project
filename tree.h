@@ -26,6 +26,6 @@ InstrumentTree buildTreeFromFile(char* filePath);
 void printTreeInOrderRec(TreeNode* root);
 void freeTreeRec(TreeNode* root);
 void insertStrToBinaryTree(InstrumentTree* tr, char* str, int id);
-void InsertNodeToBST(TreeNode* root, TreeNode* newNode);
+void InsertNodeToBST(InstrumentTree* root, TreeNode* newNode);
 
 #endif //PROJECT_TREE_H
