@@ -1,6 +1,3 @@
-//
-// Created by Eli on 26/04/2022.
-//
 
 #include "header.h"
 
@@ -19,8 +16,6 @@ void checkOpen(FILE* f){
 }
 
 char* formatRawStr(char* str){
-    /// this function deletes the '\n' at the end of str, and reallocates the str to its logical size
-    /// time complexity: 1 <= strSize <= 150. therefore, O(strSize) = O(1)!
     int strSize;
     strSize = strlen(str);
     char* newStr = (char*) malloc(sizeof(char) * strSize);

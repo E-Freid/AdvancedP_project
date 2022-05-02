@@ -1,6 +1,3 @@
-//
-// Created by Eli on 26/04/2022.
-//
 
 #ifndef PROJECT_HEADER_H
 #define PROJECT_HEADER_H

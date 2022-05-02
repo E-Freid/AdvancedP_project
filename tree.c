@@ -67,7 +67,7 @@ InstrumentTree buildTreeFromFile(char* filePath){
     while(!reachedEOF){
         fgets(str, MAX_LINE_LENGTH, f);
         if(feof(f))
-            reachedEOF = TRUE;   // finished reading the file
+            reachedEOF = TRUE;   // finished reading the file, exit the loop
         else {
             formattedStr = formatRawStr(str);
             insertStrToBinaryTree(&tr, formattedStr, id);
