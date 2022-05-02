@@ -53,3 +53,58 @@ void freeTreeRec(TreeNode* root){
         free(root);
     }
 }
+
+InstrumentTree BuildTreeFromFile(char* filePath){
+    InstrumentTree tr;
+    int id = 0;
+    char str[MAX_LINE_LENGTH];
+    char* formattedStr;
+    BOOL reachedEOF = FALSE;
+
+    makeEmptyTree(&tr);
+    FILE* f = fopen(filePath, "r");
+    checkOpen(f);
+
+    while(!reachedEOF){
+        fgets(str, MAX_LINE_LENGTH, f);
+        if(feof(f))
+            reachedEOF = TRUE;   // finished reading the file
+        else {
+            formattedStr = formatRawStr(str);
+            insertStrToBinaryTree(&tr, formattedStr, id);
+            id++;
+        }
+    }
+
+    fclose(f);
+    return tr;
+}
+
+void insertStrToBinaryTree(InstrumentTree* tr, char* str, int id){
+    TreeNode* newNode = createTreeNode(str, id, NULL, NULL);
+    InsertNodeToBST(tr->root, newNode);
+}
+
+void InsertNodeToBST(TreeNode* root, TreeNode* newNode){
+    int cmpr;
+
+    if(!root){          // empty tree
+        root = newNode;
+    }
+    else{
+        cmpr = strcmp(root->instrument, newNode->instrument);
+
+        if(cmpr < 0){       // newNode is smaller
+            if(!root->right)
+                root->right = newNode;  //  ptr is NULL, found location
+            else
+                root = root->right;     // ptr not NULL, keep going right
+        }
+        else{
+            if(!root->left)
+                root->left = newNode;
+            else
+                root = root->left;
+        }
+    }
+}
