@@ -23,7 +23,6 @@ TreeNode* createTreeNode(char* string, int id, TreeNode* left, TreeNode* right){
     TreeNode* node = (TreeNode*) malloc(sizeof(TreeNode));
     checkAllocation(node);
     node->instrument = string;
-    checkAllocation(node->instrument);
     node->insId = id;
     node->left = left;
     node->right = right;
@@ -31,78 +30,6 @@ TreeNode* createTreeNode(char* string, int id, TreeNode* left, TreeNode* right){
     return node;
 }
 
-void mergeSort(char** instruArray, int size){
-    if(size <= 1)
-        return;
-    mergeSort(instruArray, size/2);
-    mergeSort(instruArray + size/2, (size+1)/2);
-    char** res = (char**) malloc(sizeof(char*)*size);
-    checkAllocation(res);
-    merge(instruArray,size/2,instruArray+size/2,(size+1)/2, res);
-    copy(instruArray, res, size);
-    free(res);
-}
-
-void merge(char** arr1, int size1, char** arr2, int size2, char** res){
-    int ind1,ind2,indRes,cmpr;
-    ind1 = ind2 = indRes = 0;
-    while(ind1 < size1 && ind2 < size2){
-        cmpr = strcmp(arr1[ind1],arr2[ind2]);
-        if(cmpr < 0){
-            res[indRes] = arr1[ind1];
-            ind1++, indRes++;
-        }
-        else{
-            res[indRes] = arr2[ind2];
-            ind2++, indRes++;
-        }
-    }
-    while(ind1 < size1){
-        res[indRes] = arr1[ind1];
-        ind1++, indRes++;
-    }
-    while(ind2 < size2){
-        res[indRes] = arr2[ind2];
-        ind2++, indRes++;
-    }
-}
-
-void copy(char** arr, char** source, int size){
-    for(int i=0;i<size;i++){
-        arr[i] = source[i];
-    }
-}
-
-InstrumentTree createBST(char** instruArray, int size){
-    int id = 0;
-    InstrumentTree tr;
-    makeEmptyTree(&tr);
-    mergeSort(instruArray, size);
-    tr.root = createBSTRec(instruArray, size, &id);
-    return tr;
-}
-
-TreeNode* createBSTRec(char** instruArray, int size, int* id){
-    if(size == 0)
-        return NULL;
-
-    TreeNode *left,*right;
-    int midIndex;
-
-    if(size % 2 == 0){
-        left = createBSTRec(instruArray, size/2 - 1, id);
-        right = createBSTRec(instruArray + size/2 ,size/2, id);
-        midIndex = size/2 - 1;
-    }
-    else{
-        left = createBSTRec(instruArray, size/2, id);
-        right = createBSTRec(instruArray + (size+2)/2, size/2, id);
-        midIndex = size/2;
-    }
-    TreeNode* root = createTreeNode(instruArray[midIndex], *id, left, right);
-    *id += 1;
-    return root;
-}
 
 void printTreeInOrderRec(TreeNode* root){
     if(!root)
@@ -123,5 +50,64 @@ void freeTreeRec(TreeNode* root){
         freeTreeRec(root->right);
         free(root->instrument);
         free(root);
+    }
+}
+
+InstrumentTree buildTreeFromFile(char* filePath){
+    InstrumentTree tr;
+    int id = 0;
+    char str[MAX_LINE_LENGTH];
+    char* formattedStr;
+    BOOL reachedEOF = FALSE;
+
+    makeEmptyTree(&tr);
+    FILE* f = fopen(filePath, "r");
+    checkOpen(f);
+
+    while(!reachedEOF){
+        fgets(str, MAX_LINE_LENGTH, f);
+        if(feof(f))
+            reachedEOF = TRUE;   // finished reading the file, exit the loop
+        else {
+            formattedStr = formatRawStr(str);
+            insertStrToBinaryTree(&tr, formattedStr, id);
+            id++;
+        }
+    }
+
+    fclose(f);
+    return tr;
+}
+
+void insertStrToBinaryTree(InstrumentTree* tr, char* str, int id){
+    TreeNode* newNode = createTreeNode(str, id, NULL, NULL);
+    InsertNodeToBST(tr, newNode);
+}
+
+void InsertNodeToBST(InstrumentTree* tr, TreeNode* newNode) {
+    int cmpr;
+    TreeNode *root = tr->root;
+    BOOL placedNode = FALSE;
+
+    if (!root) {        // empty tree
+        tr->root = newNode;
+        return;
+    }
+
+    while (root && !placedNode) {
+        cmpr = strcmp(root->instrument, newNode->instrument);
+        if (cmpr < 0) {         // newNode is smaller
+            if (!root->right) {
+                root->right = newNode;          //  ptr is NULL, found location
+                placedNode = TRUE;
+            } else
+                root = root->right;     // ptr not NULL, go right
+        } else {
+            if (!root->left) {
+                root->left = newNode;
+                placedNode = TRUE;
+            } else
+                root = root->left;
+        }
     }
 }

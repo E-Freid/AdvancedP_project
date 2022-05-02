@@ -1,6 +1,3 @@
-//
-// Created by Eli on 26/04/2022.
-//
 
 #ifndef PROJECT_HEADER_H
 #define PROJECT_HEADER_H
@@ -20,7 +17,7 @@ typedef int BOOL;
 
 void checkAllocation(void* ptr);
 void checkOpen(FILE* f);
-char** txtToArray(char* filePath, int* size);
-void formatRawStr(char* str);
+char* formatRawStr(char* str);
+void copyUntilEnter(char* dest, char* src);
 
 #endif //PROJECT_HEADER_H
