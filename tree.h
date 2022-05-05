@@ -18,12 +18,10 @@ int findInsId(InstrumentTree tree, char *instrument);
 int findInstIdRec(TreeNode* root, char *instrument);
 void makeEmptyTree(InstrumentTree* tr);
 TreeNode* createTreeNode(char* string, int id, TreeNode* left, TreeNode* right);
-void mergeSort(char** instruArray, int size);
-void merge(char** arr1, int size1, char** arr2, int size2, char** res);
-void copy(char** arr, char** source, int size);
-InstrumentTree createBST(char** instruArray, int size);
-TreeNode* createBSTRec(char** instruArray, int size, int* id);
+InstrumentTree buildTreeFromFile(char* filePath);
 void printTreeInOrderRec(TreeNode* root);
 void freeTreeRec(TreeNode* root);
+void insertStrToBinaryTree(InstrumentTree* tr, char* str, int id);
+void InsertNodeToBST(InstrumentTree* root, TreeNode* newNode);
 
 #endif //PROJECT_TREE_H
