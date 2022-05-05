@@ -1,7 +1,3 @@
-//
-// Created by Eli on 18/04/2022.
-//
-
 #ifndef PROJECT_TREE_H
 #define PROJECT_TREE_H
 
