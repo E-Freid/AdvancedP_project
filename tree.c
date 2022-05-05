@@ -1,8 +1,7 @@
 #include "tree.h"
 
-
-int findInstId(InstrumentTree tree, char *instrument){
-    return findInstIdRec(tree.root, instrument);
+int findInstId(InstrumentTree* tree, char *instrument){
+    return findInstIdRec(tree->root, instrument);
 }
 int findInstIdRec(TreeNode* root, char *instrument){
     if(!root)
