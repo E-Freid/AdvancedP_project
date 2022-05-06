@@ -1,4 +1,6 @@
 Guitar
+Violin
+Metallophone
 Drums
 Piano
 Saxophone
