@@ -1,4 +1,3 @@
-
 #ifndef PROJECT_TREE_H
 #define PROJECT_TREE_H
 
@@ -15,7 +14,7 @@ typedef struct tree{
     TreeNode* root;
 } InstrumentTree;
 
-int findInsId(InstrumentTree tree, char *instrument);
+int findInsId(InstrumentTree* tree, char *instrument);
 int findInstIdRec(TreeNode* root, char *instrument);
 void makeEmptyTree(InstrumentTree* tr);
 TreeNode* createTreeNode(char* string, int id, TreeNode* left, TreeNode* right);
