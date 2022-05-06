@@ -40,7 +40,4 @@ void freePointersMusiciansArr(Musician ** musicians, int size);
 void freePointerCharArr(char** arr, int size);
 void freeMPIListRec(MusicianPriceInstrument* mpi);
 
-//Debug methods
-void printList(MPIList* lst);
-
 #endif //PROJECT_MUSICIANS_H

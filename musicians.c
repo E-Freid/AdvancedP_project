@@ -68,8 +68,6 @@ Musician* getMusicianFromStr(char* str, InstrumentTree* tr) {
     checkAllocation(musician->name);
     musician->phySize = musician->logSize;
 
-    // For Debugging
-    printList(&musician->instruments);
     return musician;
 }
 
@@ -89,6 +87,7 @@ void setNewNamePart(Musician* musician, char* str) {
         musician->name = (char**)realloc(musician->name, sizeof(char*) * musician->phySize);
         checkAllocation(musician->name);
     }
+
     musician->name[musician->logSize] = getNamePart(str);
     (musician->logSize)++;
 }
@@ -167,14 +166,4 @@ void freeMPIListRec(MusicianPriceInstrument* head) {
         freeMPIListRec(head->next);
         free(head);
     }
-}
-
-//For Debug purposes
-void printList(MPIList* lst) {
-    MusicianPriceInstrument* cur = lst->head;
-    while(cur != NULL) {
-        printf("ID: %d, price: %f\n", cur->insId, cur->price);
-        cur = cur->next;
-    }
-    printf("end of musician. \n" );
 }
