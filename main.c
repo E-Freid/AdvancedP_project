@@ -9,5 +9,6 @@ int main(int argc, char* argv[]){
     printTreeInOrderRec(tr.root);
 
     freeTreeRec(tr.root);
+    freePointersMusiciansArr(MusiciansGroup, numOfMusicians);
     return 0;
 }

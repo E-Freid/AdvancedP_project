@@ -1,8 +1,8 @@
+Piano
+Viola
+Metallophone
 Guitar
 Violin
-Metallophone
-Drums
-Piano
-Saxophone
-Bass
+Accordion
 Clarinet
+Drums

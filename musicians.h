@@ -22,18 +22,23 @@ typedef struct musician {
     MPIList instruments;  // MusicianPriceInstrument instances in linked list
 } Musician;
 
-//Musician methods
+// Musician methods
 Musician** getMusiciansListFromFile(char* fileName, int* size, InstrumentTree* tr);
 Musician* getMusicianFromStr(char* str, InstrumentTree* tr);
 void initializeMusician(Musician* musician);
 void setNewNamePart(Musician* musician, char* str);
 char* getNamePart(char* src);
 
-//List methods
+// List methods
 void makeEmptyList(MPIList* lst);
 MusicianPriceInstrument* createNewListNode(unsigned short insId, float price, MusicianPriceInstrument* next);
 void insertDataToEndList(MPIList * lst, unsigned short insId, float price);
 void insertNodeToEndList(MPIList* lst, MusicianPriceInstrument* newTail);
+
+// Utils
+void freePointersMusiciansArr(Musician ** musicians, int size);
+void freePointerCharArr(char** arr, int size);
+void freeMPIListRec(MusicianPriceInstrument* mpi);
 
 //Debug methods
 void printList(MPIList* lst);

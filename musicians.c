@@ -19,7 +19,7 @@ Musician** getMusiciansListFromFile(char* fileName, int* size, InstrumentTree* t
 
         if(phySize == logSize) {
             phySize *= 2;
-            musiciansArr = (Musician**)realloc(musiciansArr, phySize);
+            musiciansArr = (Musician**)realloc(musiciansArr, sizeof(Musician*) * phySize);
             checkAllocation(musiciansArr);
         }
 
@@ -27,7 +27,7 @@ Musician** getMusiciansListFromFile(char* fileName, int* size, InstrumentTree* t
         logSize++;
     }
 
-    musiciansArr = (Musician**)realloc(musiciansArr, logSize);
+    musiciansArr = (Musician**)realloc(musiciansArr, sizeof(Musician*) * logSize);
     checkAllocation(musiciansArr);
     *size = logSize;
 
@@ -45,28 +45,28 @@ Musician* getMusicianFromStr(char* str, InstrumentTree* tr) {
 
     initializeMusician(musician);
 
-    /* get the first token */
-    token = strtok(str, DELIMITER);
+    token = strtok(str, DELIMITER); // Get first token
 
-    while(token != NULL && token != "\n") {
+    while(token != NULL) {
         instrumentId = findInsId(tr, token);
 
-        if(instrumentId != NOT_FOUND) {
+        if(instrumentId == NOT_FOUND) {
+            setNewNamePart(musician, token);
+        } else {
             //We found an instrument, Let's add it to the list.
             token = strtok(NULL, DELIMITER);  // Get price as string
             sscanf(token, "%f", &curPrice);
             insertDataToEndList(&musician->instruments, instrumentId, curPrice);
 
             instrumentId = NOT_FOUND; //Reset the flag for next iteration
-        } else {
-            setNewNamePart(musician, token);
         }
 
         token = strtok(NULL, DELIMITER);
     }
 
-    musician->name = (char**)realloc(musician->name, musician->logSize);
+    musician->name = (char**)realloc(musician->name, sizeof(char*) * musician->logSize);
     checkAllocation(musician->name);
+    musician->phySize = musician->logSize;
 
     // For Debugging
     printList(&musician->instruments);
@@ -76,7 +76,8 @@ Musician* getMusicianFromStr(char* str, InstrumentTree* tr) {
 void initializeMusician(Musician* musician) {
     musician->logSize = 0;
     musician->phySize = 2;
-    musician->name = (char**)malloc(sizeof(char*) * musician->phySize);
+
+    musician->name = (char**)calloc(musician->phySize, sizeof(char*));
     checkAllocation(musician->name);
 
     makeEmptyList(&musician->instruments);
@@ -85,11 +86,11 @@ void initializeMusician(Musician* musician) {
 void setNewNamePart(Musician* musician, char* str) {
     if(musician->phySize == musician->logSize) {
         musician->phySize *= 2;
-        musician->name = (char**)realloc(musician->name, musician->phySize);
+        musician->name = (char**)realloc(musician->name, sizeof(char*) * musician->phySize);
         checkAllocation(musician->name);
     }
     musician->name[musician->logSize] = getNamePart(str);
-    musician->logSize += 1;
+    (musician->logSize)++;
 }
 
 char* getNamePart(char* src) {
@@ -134,6 +135,38 @@ void insertNodeToEndList(MPIList* lst, MusicianPriceInstrument* newTail) {
         lst->tail = newTail;
     }
 
+}
+
+// Utils
+void freePointersMusiciansArr(Musician ** musicians, int size) {
+    int i;
+
+    for (i = 0; i < size; ++i) {
+        freePointerCharArr(musicians[i]->name, musicians[i]->logSize);
+        freeMPIListRec(musicians[i]->instruments.head);
+        free(musicians[i]);
+    }
+
+    free(musicians);
+}
+
+void freePointerCharArr(char** arr, int size) {
+    int i;
+
+    for (i = 0; i < size; ++i) {
+        free(arr[i]);
+    }
+
+    free(arr);
+}
+
+void freeMPIListRec(MusicianPriceInstrument* head) {
+    if(head == NULL)
+        return;
+    else {
+        freeMPIListRec(head->next);
+        free(head);
+    }
 }
 
 //For Debug purposes
