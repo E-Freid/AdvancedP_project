@@ -168,6 +168,14 @@ void freeMPIListRec(MusicianPriceInstrument* head) {
     }
 }
 
+void freeMusiCollArr(Musician*** musiColl, int size){       // assume musicians were freed alrady
+    int i;
+    for(i=0;i<size;i++){
+        free(musiColl[i]);
+    }
+    free(musiColl);
+}
+
 // MusicianCollation methods
 Sizes* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians){
     int i;
@@ -214,5 +222,15 @@ void addPtrsToMusiCollArr(Musician*** musiColl, Sizes* sizesArr, Musician* musiP
         musiColl[instrumentId][(sizesArr[instrumentId].logSize)] = musiPtr;
         sizesArr[instrumentId].logSize++;
         mpiNode = mpiNode->next;
+    }
+}
+
+void printMusiCollArrWithId(Musician*** musiCol, int size, Sizes* sizesArr){
+    int i,j;
+    for(i=0;i<size;i++){
+        printf("id: %d \n", i);
+        for(j=0;j<sizesArr[i].phySize;j++){
+            puts(musiCol[i][j]->name[0]);
+        }
     }
 }

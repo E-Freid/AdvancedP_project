@@ -12,8 +12,10 @@ int main(int argc, char* argv[]){
     Musician*** MusiciansCollection = createMusiCollArr(musiCollSizes, numOfInstruments, MusiciansGroup, numOfMusicians);
 
     printTreeInOrderRec(tr.root);
+    printMusiCollArrWithId(MusiciansCollection, numOfInstruments, musiCollSizes);
 
     freeTreeRec(tr.root);
     freePointersMusiciansArr(MusiciansGroup, numOfMusicians);
+    freeMusiCollArr(MusiciansCollection, numOfInstruments);
     return 0;
 }

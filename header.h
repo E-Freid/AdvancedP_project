@@ -15,9 +15,10 @@
 
 typedef int BOOL;
 
+
+char* formatRawStr(char* str);
 void checkAllocation(void* ptr);
 void checkOpen(FILE* f);
-char* formatRawStr(char* str);
 void copyUntilEnter(char* dest, char* src);
 
 #endif //PROJECT_HEADER_H

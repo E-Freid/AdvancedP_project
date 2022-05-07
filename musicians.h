@@ -40,6 +40,7 @@ Sizes* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusici
 void addSizesToArr(Sizes* sizesArr, Musician* musi);
 void allocateMusiArrays(Musician*** musiColl, Sizes* sizesArr, int size);
 void addPtrsToMusiCollArr(Musician*** musiColl, Sizes* sizesArr, Musician* musiPtr);
+void printMusiCollArrWithId(Musician*** musiCol, int size, Sizes* sizesArr);
 
 // List methods
 void makeEmptyList(MPIList* lst);
@@ -51,6 +52,7 @@ void insertNodeToEndList(MPIList* lst, MusicianPriceInstrument* newTail);
 void freePointersMusiciansArr(Musician ** musicians, int size);
 void freePointerCharArr(char** arr, int size);
 void freeMPIListRec(MusicianPriceInstrument* mpi);
+void freeMusiCollArr(Musician*** musiColl, int size);
 
 
 #endif //PROJECT_MUSICIANS_H
