@@ -168,4 +168,20 @@ void freeMPIListRec(MusicianPriceInstrument* head) {
     }
 }
 
+int* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians){
+    int i;
+    int* sizesArr = (int*) calloc(arrSize, sizeof(int));
+    checkAllocation(sizesArr);
+    for(i=0;i<numOfMusicians;i++){
+        addSizesToArr(sizesArr, musiGroup[i]);
+    }
+    return sizesArr;
+}
 
+void addSizesToArr(int* sizesArr, Musician* musi){
+    MusicianPriceInstrument* head = musi->instruments.head;
+    while(head != NULL){
+        sizesArr[head->insId]++;
+        head = head->next;
+    }
+}

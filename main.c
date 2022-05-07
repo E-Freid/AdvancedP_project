@@ -8,6 +8,9 @@ int main(int argc, char* argv[]){
     InstrumentTree tr = buildTreeFromFile(argv[1], &numOfInstruments);
     Musician** MusiciansGroup = getMusiciansListFromFile(argv[2], &numOfMusicians, &tr);
 
+    int* MusiCollSizes = createMusiCollSizesArr(numOfInstruments, MusiciansGroup, numOfMusicians);
+    Musician*** MusiciansCollection;
+
     printTreeInOrderRec(tr.root);
 
     freeTreeRec(tr.root);

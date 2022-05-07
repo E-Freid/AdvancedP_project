@@ -27,6 +27,9 @@ Musician** getMusiciansListFromFile(char* fileName, int* size, InstrumentTree* t
 Musician* getMusicianFromStr(char* str, InstrumentTree* tr);
 void initializeMusician(Musician* musician);
 void setNewNamePart(Musician* musician, char* str);
+void addSizesToArr(int* sizesArr, Musician* musi);
+int* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians);
+
 char* getNamePart(char* src);
 
 // List methods
@@ -39,5 +42,6 @@ void insertNodeToEndList(MPIList* lst, MusicianPriceInstrument* newTail);
 void freePointersMusiciansArr(Musician ** musicians, int size);
 void freePointerCharArr(char** arr, int size);
 void freeMPIListRec(MusicianPriceInstrument* mpi);
+
 
 #endif //PROJECT_MUSICIANS_H
