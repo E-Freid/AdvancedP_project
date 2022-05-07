@@ -168,7 +168,7 @@ void freeMPIListRec(MusicianPriceInstrument* head) {
     }
 }
 
-void freeMusiCollArr(Musician*** musiColl, int size){       // assume musicians were freed alrady
+void freeMusiCollArr(Musician*** musiColl, int size){       // assume musicians were freed already
     int i;
     for(i=0;i<size;i++){
         free(musiColl[i]);
@@ -179,10 +179,10 @@ void freeMusiCollArr(Musician*** musiColl, int size){       // assume musicians 
 // MusicianCollation methods
 Sizes* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians){
     int i;
-    Sizes* sizesArr = (Sizes*) calloc(arrSize, sizeof(Sizes));
+    Sizes* sizesArr = (Sizes*) calloc(arrSize, sizeof(Sizes));      // init array with 0's
     checkAllocation(sizesArr);
     for(i=0;i<numOfMusicians;i++){
-        addSizesToArr(sizesArr, musiGroup[i]);
+        addSizesToArr(sizesArr, musiGroup[i]);      // iterate through each musician's instruments and add the sizes
     }
     return sizesArr;
 }
@@ -199,10 +199,10 @@ Musician*** createMusiCollArr(Sizes* sizesArr, int size, Musician** musiGroup, i
     int i;
     Musician*** musiColl = (Musician***) malloc(sizeof(Musician**) * size);
     checkAllocation(musiColl);
-    allocateMusiArrays(musiColl,sizesArr,size);
+    allocateMusiArrays(musiColl,sizesArr,size);     // allocate the Musician** arrays according to the phySize in Sizes* arr
     for(i=0;i<numOfMusi;i++){
-        addPtrsToMusiCollArr(musiColl, sizesArr, musiGroup[i]);
-    }
+        addPtrsToMusiCollArr(musiColl, sizesArr, musiGroup[i]);     // iterate through each musician's instruments and add ptrs
+    }                                                               // to the corresponding array in musiColl
     return musiColl;
 }
 

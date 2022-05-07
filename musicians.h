@@ -23,6 +23,7 @@ typedef struct musician {
 } Musician;
 
 typedef struct sizes {
+    // used in a help array to keep track of Musician ptr array in the MusicianCollation array
     int logSize;
     int phySize;
 } Sizes;
