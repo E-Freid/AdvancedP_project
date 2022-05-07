@@ -22,15 +22,24 @@ typedef struct musician {
     MPIList instruments;  // MusicianPriceInstrument instances in linked list
 } Musician;
 
+typedef struct sizes {
+    int logSize;
+    int phySize;
+} Sizes;
+
 // Musician methods
 Musician** getMusiciansListFromFile(char* fileName, int* size, InstrumentTree* tr);
 Musician* getMusicianFromStr(char* str, InstrumentTree* tr);
 void initializeMusician(Musician* musician);
 void setNewNamePart(Musician* musician, char* str);
-void addSizesToArr(int* sizesArr, Musician* musi);
-int* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians);
-
 char* getNamePart(char* src);
+
+// MusicianCollation methods
+Musician*** createMusiCollArr(Sizes* sizesArr, int size, Musician** musiGroup, int numOfMusi);
+Sizes* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians);
+void addSizesToArr(Sizes* sizesArr, Musician* musi);
+void allocateMusiArrays(Musician*** musiColl, Sizes* sizesArr, int size);
+void addPtrsToMusiCollArr(Musician*** musiColl, Sizes* sizesArr, Musician* musiPtr);
 
 // List methods
 void makeEmptyList(MPIList* lst);

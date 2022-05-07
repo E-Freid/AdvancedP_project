@@ -168,9 +168,10 @@ void freeMPIListRec(MusicianPriceInstrument* head) {
     }
 }
 
-int* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians){
+// MusicianCollation methods
+Sizes* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians){
     int i;
-    int* sizesArr = (int*) calloc(arrSize, sizeof(int));
+    Sizes* sizesArr = (Sizes*) calloc(arrSize, sizeof(Sizes));
     checkAllocation(sizesArr);
     for(i=0;i<numOfMusicians;i++){
         addSizesToArr(sizesArr, musiGroup[i]);
@@ -178,10 +179,40 @@ int* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusician
     return sizesArr;
 }
 
-void addSizesToArr(int* sizesArr, Musician* musi){
+void addSizesToArr(Sizes* sizesArr, Musician* musi){
     MusicianPriceInstrument* head = musi->instruments.head;
     while(head != NULL){
-        sizesArr[head->insId]++;
+        sizesArr[head->insId].phySize++;
         head = head->next;
+    }
+}
+
+Musician*** createMusiCollArr(Sizes* sizesArr, int size, Musician** musiGroup, int numOfMusi){
+    int i;
+    Musician*** musiColl = (Musician***) malloc(sizeof(Musician**) * size);
+    checkAllocation(musiColl);
+    allocateMusiArrays(musiColl,sizesArr,size);
+    for(i=0;i<numOfMusi;i++){
+        addPtrsToMusiCollArr(musiColl, sizesArr, musiGroup[i]);
+    }
+    return musiColl;
+}
+
+void allocateMusiArrays(Musician*** musiColl, Sizes* sizesArr, int size){
+    int i;
+    for(i=0;i<size;i++){
+        musiColl[i] = (Musician**) malloc(sizeof(Musician*) * (sizesArr[i].phySize));
+        checkAllocation(musiColl[i]);
+    }
+}
+
+void addPtrsToMusiCollArr(Musician*** musiColl, Sizes* sizesArr, Musician* musiPtr){
+    MusicianPriceInstrument* mpiNode = musiPtr->instruments.head;
+    int instrumentId;
+    while(mpiNode != NULL){
+        instrumentId = mpiNode->insId;
+        musiColl[instrumentId][(sizesArr[instrumentId].logSize)] = musiPtr;
+        sizesArr[instrumentId].logSize++;
+        mpiNode = mpiNode->next;
     }
 }
