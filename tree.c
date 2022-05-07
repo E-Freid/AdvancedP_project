@@ -58,7 +58,7 @@ void freeTreeRec(TreeNode* root){
     }
 }
 
-InstrumentTree buildTreeFromFile(char* filePath){
+InstrumentTree buildTreeFromFile(char* filePath, int* numOfInstruments){
     InstrumentTree tr;
     int id = 0;
     char str[MAX_LINE_LENGTH];
@@ -79,7 +79,7 @@ InstrumentTree buildTreeFromFile(char* filePath){
             id++;
         }
     }
-
+    *numOfInstruments = id;
     fclose(f);
     return tr;
 }

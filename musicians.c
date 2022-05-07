@@ -167,3 +167,5 @@ void freeMPIListRec(MusicianPriceInstrument* head) {
         free(head);
     }
 }
+
+
