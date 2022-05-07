@@ -17,5 +17,6 @@ int main(int argc, char* argv[]){
     freeTreeRec(tr.root);
     freePointersMusiciansArr(MusiciansGroup, numOfMusicians);
     freeMusiCollArr(MusiciansCollection, numOfInstruments);
+    free(musiCollSizes);
     return 0;
 }
