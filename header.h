@@ -1,4 +1,3 @@
-
 #ifndef PROJECT_HEADER_H
 #define PROJECT_HEADER_H
 
@@ -9,15 +8,17 @@
 #define NOT_FOUND -1
 #define TRUE 1
 #define FALSE 0
+#define DELIMITER " ,.;:?!-\t'()[]{}<>~_\n"
 #define MAX_LINE_LENGTH 151
 #define MEM_ERROR "MEMORY ALLOCATION ERROR! EXITING PROGRAM!"
 #define FILE_ERROR "FILE ERROR! EXITING PROGRAM!"
 
 typedef int BOOL;
 
+
+char* formatRawStr(char* str);
 void checkAllocation(void* ptr);
 void checkOpen(FILE* f);
-char* formatRawStr(char* str);
 void copyUntilEnter(char* dest, char* src);
 
 #endif //PROJECT_HEADER_H
