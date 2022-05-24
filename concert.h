@@ -16,7 +16,7 @@ typedef struct {
     int inst;
     char* name;
     char importance;
-    Musician* bookedMusicians;
+    Musician** bookedMusicians;
 } ConcertInstrument;
 
 typedef struct ciListNode{
@@ -37,8 +37,15 @@ typedef struct{
 
 char* getLineFromUser(char startingChar);
 char* getNameAndDate(Concert* concert, char* line);
-char* getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
+CIListNode* createNewCiListNode(ConcertInstrument instrument, CIListNode* next);
+BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
+BOOL getMusicinsForInstrument(ConcertInstrument* instrument, Musician** musicianArr, int size, int numOfmusi);
 void getConcerts(Musician*** musiColl, Sizes* sizes, InstrumentTree* tree);
+void addDataConcertList(Concert* concert, ConcertInstrument instrument);
+void addCiListNodeToEndList(CIList* lst, CIListNode* newTail);
+void makeEmptyConcertList(CIList* lst);
+void freeConcert(Concert concert);
+void freeConcertInstrumentsList(CIListNode* head);
 
 
 #endif //PROJECT_CONCERT_H

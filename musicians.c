@@ -67,6 +67,7 @@ Musician* getMusicianFromStr(char* str, InstrumentTree* tr) {
     musician->name = (char**)realloc(musician->name, sizeof(char*) * musician->logSize);
     checkAllocation(musician->name);
     musician->phySize = musician->logSize;
+    musician->isTakenAlready = FALSE;
 
     return musician;
 }
