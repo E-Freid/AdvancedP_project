@@ -40,29 +40,45 @@ char* getLineFromUser(char startingChar){
         logSize++;
         ch = getchar();
     }
+    line = realloc(line, sizeof(char) * logSize);
+    line[logSize] = '\0';
 
     return line;
 }
 
 char* getNameAndDate(Concert* concert, char* line){
     int nameLen,i;
-    Date date;
     char deli[] = " ";
     char* token;
     float hourAddition;
 
-    sscanf(line, "%d %d %d %f:%f", &date.day, &date.month, &date.year, &date.hour, &hourAddition);  // get dates before
-    date.hour += (hourAddition) / HOUR;                                                              // changing the line
-
     token = strtok(line, deli);
 
-    nameLen = strlen(token);
+    nameLen = strlen(token);    // get the name
     concert->name = (char*) malloc(sizeof(char) * nameLen + 1);
+    checkAllocation(concert->name);
     strcpy(concert->name, token);
 
-    for(i=0;i<4;i++){
-        token = strtok(NULL, deli);     // advance to the instruments
+    for(i=0;i<4;i++){           // get the dates
+        token = strtok(NULL, deli);
+        switch(i){
+            case 0:
+                sscanf(token, "%d", &concert->date_of_concert.day);
+                break;
+            case 1:
+                sscanf(token, "%d", &concert->date_of_concert.month);
+                break;
+            case 2:
+                sscanf(token, "%d", &concert->date_of_concert.year);
+                break;
+            case 3:
+                sscanf(token, "%f:%f", &concert->date_of_concert.hour, &hourAddition);
+                concert->date_of_concert.hour += hourAddition/HOUR;
+                break;
+        }
     }
+
+    token = strtok(NULL, deli); // advance to the instruments
     return token;
 }
 
@@ -89,10 +105,16 @@ BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musicia
 
         // sort here musicollections[instrument.inst] according to instrument.importance
 
-        concertIsPossible = getMusicinsForInstrument(&instrument,musiColl[instrument.inst],
-                                                     sizes[instrument.inst].phySize, instrument.num);
+        if(instrument.inst != NOT_FOUND) {
+            concertIsPossible = getMusicinsForInstrument(&instrument, musiColl[instrument.inst],
+                                                         sizes[instrument.inst].phySize, instrument.num);
+        }
+        else
+            instrument.bookedMusicians = NULL;
 
         addDataConcertList(concert,instrument);
+
+        token = strtok(NULL, deli); // advance to next instrument
     }
     return concertIsPossible;
 }
@@ -124,11 +146,7 @@ void addDataConcertList(Concert* concert, ConcertInstrument instrument){
 CIListNode* createNewCiListNode(ConcertInstrument instrument, CIListNode* next){
     CIListNode* node = (CIListNode*) malloc(sizeof(CIListNode));
     checkAllocation(node);
-    node->instrument.name = instrument.name;
-    node->instrument.bookedMusicians = instrument.bookedMusicians;
-    node->instrument.inst = instrument.inst;
-    node->instrument.num = instrument.num;
-    node->instrument.importance = instrument.importance;
+    node->instrument = instrument;
     node->next = next;
     return node;
 }
@@ -152,5 +170,10 @@ void freeConcertInstrumentsList(CIListNode* head){
         return;
     freeConcertInstrumentsList(head->next);
     free(head->instrument.name);
-    free(head->instrument.bookedMusicians);
+    if(head->instrument.bookedMusicians != NULL)
+        free(head->instrument.bookedMusicians);
+}
+
+void makeEmptyConcertList(CIList* lst){
+    lst->head = lst->tail = NULL;
 }

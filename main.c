@@ -1,5 +1,6 @@
 #include "tree.h"
 #include "musicians.h"
+#include "concert.h"
 
 int main(int argc, char* argv[]){
     int numOfMusicians;
@@ -13,6 +14,8 @@ int main(int argc, char* argv[]){
 
     printTreeInOrderRec(tr.root);
     printMusiCollArrWithId(MusiciansCollection, numOfInstruments, musiCollSizes);
+
+    getConcerts(MusiciansCollection, musiCollSizes, &tr);
 
     freeTreeRec(tr.root);
     freePointersMusiciansArr(MusiciansGroup, numOfMusicians);
