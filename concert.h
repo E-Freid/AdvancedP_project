@@ -3,6 +3,7 @@
 #define PROJECT_CONCERT_H
 
 #include "musicians.h"
+#include "tree.h"
 
 typedef struct
 {
@@ -35,7 +36,9 @@ typedef struct{
 } Concert;
 
 char* getLineFromUser(char startingChar);
-void getConcerts(Musician*** musiColl, Sizes* sizes);
-void getNameAndDate(Concert* concert, char* line);
+char* getNameAndDate(Concert* concert, char* line);
+char* getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
+void getConcerts(Musician*** musiColl, Sizes* sizes, InstrumentTree* tree);
+
 
 #endif //PROJECT_CONCERT_H
