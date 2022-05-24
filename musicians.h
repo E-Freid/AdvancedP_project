@@ -20,6 +20,7 @@ typedef struct musician {
     int logSize;
     int phySize;
     MPIList instruments;  // MusicianPriceInstrument instances in linked list
+    BOOL isTakenAlready;
 } Musician;
 
 typedef struct sizes {
