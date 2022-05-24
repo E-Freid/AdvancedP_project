@@ -10,6 +10,7 @@
 #define FALSE 0
 #define DELIMITER " ,.;:?!-\t'()[]{}<>~_\n"
 #define MAX_LINE_LENGTH 151
+#define HOUR 60
 #define MEM_ERROR "MEMORY ALLOCATION ERROR! EXITING PROGRAM!"
 #define FILE_ERROR "FILE ERROR! EXITING PROGRAM!"
 
