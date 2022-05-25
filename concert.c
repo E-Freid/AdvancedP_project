@@ -18,9 +18,7 @@ void getConcerts(Musician*** musiColl, Sizes* sizes, InstrumentTree* tree){
         /// print function for the concert with concertIsPossible bool to know what to print
         /// reset function for the musicians that were taken for the concert (maybe do it inside of freeConcert instead)
         freeConcert(concert);
-        getchar(); // flush the '\n', need to fix it, not working good
-        ch = getchar();  // advance to the next concert
-
+        ch = getchar(); // advance to the next concert
     }
 }
 
