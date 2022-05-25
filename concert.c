@@ -15,9 +15,10 @@ void getConcerts(Musician*** musiColl, Sizes* sizes, InstrumentTree* tree){
         token = getNameAndDate(&concert,line);
         concertIsPossible = getInstruments(&concert,token,tree,musiColl,sizes);
         free(line);
-        //printConcert(concert, concertIsPossible);
+        /// print function for the concert with concertIsPossible bool to know what to print
+        /// reset function for the musicians that were taken for the concert (maybe do it inside of freeConcert instead)
         freeConcert(concert);
-        ch = getchar();
+        ch = getchar(); // advance to the next concert
     }
 }
 
@@ -36,11 +37,11 @@ char* getLineFromUser(char startingChar){
             line = (char*) realloc(line, sizeof(char) * phySize);
             checkAllocation(line);
         }
-        line[logSize] = ch;
+        line[logSize] = ch;     // get char into the str
         logSize++;
         ch = getchar();
     }
-    line = realloc(line, sizeof(char) * logSize);
+    line = realloc(line, sizeof(char) * logSize + 1);
     line[logSize] = '\0';
 
     return line;
@@ -103,7 +104,7 @@ BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musicia
         token = strtok(NULL, deli);         // get importance of instrument
         sscanf(token, "%c", &instrument.importance);
 
-        // sort here musicollections[instrument.inst] according to instrument.importance
+        /// sort here musicollections[instrument.inst] according to instrument.importance
 
         if(instrument.inst != NOT_FOUND) {
             concertIsPossible = getMusicinsForInstrument(&instrument, musiColl[instrument.inst],
