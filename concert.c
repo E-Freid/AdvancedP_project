@@ -1,20 +1,51 @@
-
 #include "concert.h"
 
-void getConcerts(Musician*** musiColl, Sizes* sizes, InstrumentTree* tree) {char *line, *token;
-    Concert concert;
-    BOOL concertIsPossible;
-    BOOL finishedConcerts = FALSE;
-    makeEmptyConcertList(&concert.instruments);
+Concert** getConcerts(Musician*** musiColl, Sizes* sizes,Musician** MusiciansGroup, int numOfMusicians,
+                      InstrumentTree* tree, int* numOfConcerts) {
+    char* line;
+    int concertsSize = 0, phySize = 2;
+
+    Concert** concerts = (Concert**)malloc(sizeof(Concert*) * phySize);
+    checkAllocation(concerts);
+
+//    BOOL finishedConcerts = FALSE;
 
     while ((line = getLineFromUser()) != NULL) {
-        token = getNameAndDate(&concert, line);
-        concertIsPossible = getInstruments(&concert, token, tree, musiColl, sizes);
-        free(line);
-        /// print function for the concert with concertIsPossible bool to know what to print
-        /// reset function for the musicians that were taken for the concert (maybe do it inside of freeConcert instead)
-        freeConcert(concert);
+        if(concertsSize == phySize){
+            phySize *= 2;
+            concerts = (Concert**) realloc(line, sizeof(Concert*) * phySize);
+            checkAllocation(concerts);
+        }
+
+        concerts[concertsSize] = getConcertFromLine(line, tree, musiColl, sizes);
+        concertsSize++;
+        resetMusiciansStatus(MusiciansGroup, numOfMusicians);
     }
+
+    if(concertsSize == 0){
+        free(concerts);
+        concerts = NULL;
+    }
+    else {
+        concerts = (Concert**)realloc(concerts, sizeof(Concert*) * concertsSize);
+        checkAllocation(concerts);
+    }
+
+    *numOfConcerts = concertsSize;
+    return concerts;
+}
+
+Concert* getConcertFromLine(char* line, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes) {
+    char* token;
+    Concert* concert = (Concert*)malloc(sizeof(Concert));
+    checkAllocation(concert);
+
+    makeEmptyConcertList(&concert->instruments);
+    token = getNameAndDate(concert, line);
+    concert->isConcertPossible = getInstruments(concert, token, tree, musiColl, sizes);
+    free(line);
+
+    return concert;
 }
 
 char* getLineFromUser(){
@@ -40,14 +71,15 @@ char* getLineFromUser(){
         line = NULL;
     }
     else {
-        line = realloc(line, sizeof(char) * logSize + 1);
+        line = (char*)realloc(line, sizeof(char) * logSize + 1);
         checkAllocation(line);
         line[logSize] = '\0';
     }
+
     return line;
 }
 
-char* getNameAndDate(Concert* concert, char* line){
+char* getNameAndDate(Concert* concert, char* line) {
     int nameLen,i;
     char deli[] = " ";
     char* token;
@@ -60,7 +92,7 @@ char* getNameAndDate(Concert* concert, char* line){
     checkAllocation(concert->name);
     strcpy(concert->name, token);
 
-    for(i=0;i<4;i++){           // get the dates
+    for(i = 0; i < 4; i++){           // get the dates
         token = strtok(NULL, deli);
         switch(i){
             case 0:
@@ -126,19 +158,32 @@ BOOL getMusicinsForInstrument(ConcertInstrument* instrument, Musician** musician
     instrument->bookedMusicians = (Musician**) malloc(sizeof(Musician*) * numOfmusi);
     checkAllocation(instrument->bookedMusicians);
     for(i=bookedArrInd=0;i<size && bookedArrInd<numOfmusi;i++){
-        if(musicianArr[i]->isTakenAlready == FALSE){
+        if(musicianArr[i]->isTakenAlready == FALSE) {
             instrument->bookedMusicians[bookedArrInd] = musicianArr[i];
             musicianArr[i]->isTakenAlready = TRUE;
             bookedArrInd++;
         }
-
     }
+
     if(bookedArrInd < numOfmusi){
         return FALSE;
     }
+
     return TRUE;
 }
 
+/* Function that resets the isTakenAlready flag for each musician to false before getting new concert data */
+void resetMusiciansStatus(Musician** musicians, int size) {
+    for (int i = 0; i < size; ++i) {
+        musicians[i]->isTakenAlready = FALSE;
+    }
+}
+
+void printConcerts(Concert* concerts, int numOfConcerts) {
+    /// print function for the concert with concertIsPossible bool to know what to print
+}
+
+// List Methods
 void addDataConcertList(Concert* concert, ConcertInstrument instrument){
     CIListNode* node = createNewCiListNode(instrument, NULL);
     addCiListNodeToEndList(&concert->instruments, node);
@@ -161,9 +206,17 @@ void addCiListNodeToEndList(CIList* lst, CIListNode* newTail){
     }
 }
 
-void freeConcert(Concert concert){
-    free(concert.name);
-    freeConcertInstrumentsList(concert.instruments.head);
+void makeEmptyConcertList(CIList* lst){
+    lst->head = lst->tail = NULL;
+}
+
+// Free helpers
+void freeConcerts(Concert** concerts, int size) {
+    for (int i = 0; i < size; ++i) {
+        free(concerts[i]->name);
+        freeConcertInstrumentsList(concerts[i]->instruments.head);
+    }
+    free(concerts);
 }
 
 void freeConcertInstrumentsList(CIListNode* head){
@@ -174,8 +227,4 @@ void freeConcertInstrumentsList(CIListNode* head){
     if(head->instrument.bookedMusicians != NULL)
         free(head->instrument.bookedMusicians);
     free(head);
-}
-
-void makeEmptyConcertList(CIList* lst){
-    lst->head = lst->tail = NULL;
 }
