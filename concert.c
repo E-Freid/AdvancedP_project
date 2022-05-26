@@ -179,8 +179,76 @@ void resetMusiciansStatus(Musician** musicians, int size) {
     }
 }
 
-void printConcerts(Concert* concerts, int numOfConcerts) {
-    /// print function for the concert with concertIsPossible bool to know what to print
+void printConcerts(Concert** concerts, int numOfConcerts) {
+    Concert* curConcert;
+    Date* date;
+
+    printf("Print Concerts info: \n");
+
+    for (int i = 0; i < numOfConcerts; ++i) {
+        curConcert = concerts[i];
+        date = &curConcert->date_of_concert;
+
+        if(!curConcert->isConcertPossible)
+            printf("Could not find musicians for the concert %s\n", curConcert->name);
+
+        else {
+            printf("Concert name: %s\n", curConcert->name);
+            printf("Concert time: %02d %02d %04d %02d:%02d \n", date->day, date->month, date->year,
+                   (int)date->hour, getMinutes(date->hour));
+            printInstrumentsList(&curConcert->instruments);
+        }
+    }
+}
+
+void printInstrumentsList(CIList* instrumentsList) {
+    CIListNode* cur = instrumentsList->head;
+    ConcertInstrument* curInstrument;
+    printf("Musicians list for the concert: \n");
+    while(cur != NULL) {
+        curInstrument = &cur->instrument;
+        printBookedMusicians(curInstrument->bookedMusicians, curInstrument->num, curInstrument->name, curInstrument->inst);
+        cur = cur->next;
+    }
+}
+
+void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId) {
+    float price;
+
+    for (int i = 0; i < numOfMusicians; ++i) {
+        price = getMusicianInstrumentPrice(bookedMusicians[i], instrumentId);
+        printMusicianName(bookedMusicians[i]->name, bookedMusicians[i]->logSize);
+        printf("%s %f\n", instrumentName, price);
+    }
+}
+
+void printMusicianName(char** name, int size) {
+    for (int i = 0; i < size; ++i) {
+        printf("%s ", name[i]);
+    }
+}
+
+float getMusicianInstrumentPrice(Musician* musician, unsigned short instrumentId) {
+    BOOL isFound = FALSE;
+    float price = 0;
+    MusicianPriceInstrument* cur = musician->instruments.head;
+
+    while(cur != NULL && !isFound) {
+        if(cur->insId == instrumentId) {
+            isFound = TRUE;
+            price = cur->price;
+        }
+        cur = cur->next;
+    }
+
+    return price;
+}
+
+int getMinutes(float hour) {
+    int intPart = (int)hour;
+    float decimalPart = hour - (float)intPart;
+
+    return decimalPart * 60;
 }
 
 // List Methods

@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
     printMusiCollArrWithId(MusiciansCollection, numOfInstruments, musiCollSizes);
 
     Concert** concerts = getConcerts(MusiciansCollection, musiCollSizes, MusiciansGroup, numOfMusicians, &tr, &numOfConcerts);
-//    printConcerts(concerts, numOfConcerts);
+    printConcerts(concerts, numOfConcerts);
 
     freeTreeRec(tr.root);
     freePointersMusiciansArr(MusiciansGroup, numOfMusicians);

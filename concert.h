@@ -38,16 +38,21 @@ typedef struct{
 
 char* getLineFromUser();
 char* getNameAndDate(Concert* concert, char* line);
-CIListNode* createNewCiListNode(ConcertInstrument instrument, CIListNode* next);
 BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
 BOOL getMusicinsForInstrument(ConcertInstrument* instrument, Musician** musicianArr, int size, int numOfmusi);
 Concert** getConcerts(Musician*** musiColl, Sizes* sizes,Musician** MusiciansGroup, int numOfMusicians,
                       InstrumentTree* tree, int* numOfConcerts);
 void resetMusiciansStatus(Musician** musicians, int size);
 Concert* getConcertFromLine(char* line, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
-void printConcerts(Concert* concerts, int numOfConcerts);
+void printConcerts(Concert** concerts, int numOfConcerts);
+void printInstrumentsList(CIList* instrumentsList);
+void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId);
+void printMusicianName(char** name, int size);
+float getMusicianInstrumentPrice(Musician* musician, unsigned short instrumentId);
+int getMinutes(float hour);
 
-// Lidt Methods
+// List Methods
+CIListNode* createNewCiListNode(ConcertInstrument instrument, CIListNode* next);
 void addDataConcertList(Concert* concert, ConcertInstrument instrument);
 void addCiListNodeToEndList(CIList* lst, CIListNode* newTail);
 void makeEmptyConcertList(CIList* lst);
