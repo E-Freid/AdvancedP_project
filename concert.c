@@ -1,29 +1,24 @@
 
 #include "concert.h"
 
-void getConcerts(Musician*** musiColl, Sizes* sizes, InstrumentTree* tree){
-    char ch;
-    char* line, *token;
+void getConcerts(Musician*** musiColl, Sizes* sizes, InstrumentTree* tree) {char *line, *token;
     Concert concert;
     BOOL concertIsPossible;
+    BOOL finishedConcerts = FALSE;
     makeEmptyConcertList(&concert.instruments);
 
-    ch = getchar();
-
-    while(ch != '\n') {
-        line = getLineFromUser(ch);
-        token = getNameAndDate(&concert,line);
-        concertIsPossible = getInstruments(&concert,token,tree,musiColl,sizes);
+    while ((line = getLineFromUser()) != NULL) {
+        token = getNameAndDate(&concert, line);
+        concertIsPossible = getInstruments(&concert, token, tree, musiColl, sizes);
         free(line);
         /// print function for the concert with concertIsPossible bool to know what to print
         /// reset function for the musicians that were taken for the concert (maybe do it inside of freeConcert instead)
         freeConcert(concert);
-        ch = getchar(); // advance to the next concert
     }
 }
 
-char* getLineFromUser(char startingChar){
-    char ch = startingChar;
+char* getLineFromUser(){
+    int ch;
     char* line;
 
     int logSize,phySize;
@@ -31,7 +26,7 @@ char* getLineFromUser(char startingChar){
     line = (char*) malloc(sizeof(char) * phySize);
     checkAllocation(line);
 
-    while(ch != '\n'){
+    while((ch = getchar()) != '\n' && ch != EOF){
         if(logSize == phySize){
             phySize *= 2;
             line = (char*) realloc(line, sizeof(char) * phySize);
@@ -39,11 +34,16 @@ char* getLineFromUser(char startingChar){
         }
         line[logSize] = ch;     // get char into the str
         logSize++;
-        ch = getchar();
     }
-    line = realloc(line, sizeof(char) * logSize + 1);
-    line[logSize] = '\0';
-
+    if(logSize == 0){
+        free(line);
+        line = NULL;
+    }
+    else {
+        line = realloc(line, sizeof(char) * logSize + 1);
+        checkAllocation(line);
+        line[logSize] = '\0';
+    }
     return line;
 }
 
@@ -173,6 +173,7 @@ void freeConcertInstrumentsList(CIListNode* head){
     free(head->instrument.name);
     if(head->instrument.bookedMusicians != NULL)
         free(head->instrument.bookedMusicians);
+    free(head);
 }
 
 void makeEmptyConcertList(CIList* lst){

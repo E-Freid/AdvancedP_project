@@ -35,7 +35,7 @@ typedef struct{
     CIList instruments;
 } Concert;
 
-char* getLineFromUser(char startingChar);
+char* getLineFromUser();
 char* getNameAndDate(Concert* concert, char* line);
 CIListNode* createNewCiListNode(ConcertInstrument instrument, CIListNode* next);
 BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
