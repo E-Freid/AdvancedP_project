@@ -1,6 +1,7 @@
 #include "header.h"
 
 void checkAllocation(void* ptr){
+    /// this function checks if a memory allocation was successful
     if(ptr == NULL) {
         printf(MEM_ERROR);
         exit(1);
@@ -8,6 +9,7 @@ void checkAllocation(void* ptr){
 }
 
 void checkOpen(FILE* f){
+    /// this function checks if a file opening was successful
     if(f == NULL) {
         printf(FILE_ERROR);
         exit(1);
@@ -15,23 +17,15 @@ void checkOpen(FILE* f){
 }
 
 char* formatRawStr(char* str) {
+    /// this function takes a str with unknown length, and shrinks it to the logical size. also removes the '\n'.
     int strSize;
     strSize = strlen(str);
+    str[strSize-1] = '\0';
 
     char* newStr = (char*) malloc(sizeof(char) * strSize);
     checkAllocation(newStr);
 
-    copyUntilEnter(newStr, str);
-    newStr[strSize-1] = '\0';
+    strcpy(newStr, str);
 
     return newStr;
-}
-
-void copyUntilEnter(char* dest, char* src){
-    int i=0;
-
-    while(src[i] != '\n'){
-        dest[i] = src[i];
-        i++;
-    }
 }
