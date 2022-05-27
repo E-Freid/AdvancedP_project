@@ -1,20 +1,22 @@
 #include "tree.h"
 
 int findInsId(InstrumentTree* tree, char *instrument){
+    /// this function return the instruments id in the tree
     return findInstIdRec(tree->root, instrument);
 }
 int findInstIdRec(TreeNode* root, char *instrument){
+    /// this function uses binary search to find the id of the instrument and returns it
     if(!root)
         return NOT_FOUND;
 
-    if(strcmp(instrument,root->instrument) == 0)
+    if(strcmp(instrument,root->instrument) == 0)    // found the instrument
         return root->insId;
 
-    else if(strcmp(instrument,root->instrument) > 0)
+    else if(strcmp(instrument,root->instrument) > 0)    // go right
         return findInstIdRec(root->right, instrument);
 
     else
-        return findInstIdRec(root->left, instrument);
+        return findInstIdRec(root->left, instrument);   // go left
 }
 
 void makeEmptyTree(InstrumentTree* tr){
@@ -22,6 +24,7 @@ void makeEmptyTree(InstrumentTree* tr){
 }
 
 TreeNode* createTreeNode(char* string, int id, TreeNode* left, TreeNode* right){
+    /// this function creates and returns a new TreeNode
     TreeNode* node = (TreeNode*) malloc(sizeof(TreeNode));
     checkAllocation(node);
 
@@ -33,20 +36,8 @@ TreeNode* createTreeNode(char* string, int id, TreeNode* left, TreeNode* right){
     return node;
 }
 
-
-void printTreeInOrderRec(TreeNode* root){
-    if(!root)
-        return;
-
-    else {
-        printTreeInOrderRec(root->left);
-        printf("%d ", root->insId);
-        puts(root->instrument);
-        printTreeInOrderRec(root->right);
-    }
-}
-
 void freeTreeRec(TreeNode* root){
+    /// this function frees the tree
     if(!root)
         return;
 
@@ -59,6 +50,7 @@ void freeTreeRec(TreeNode* root){
 }
 
 InstrumentTree buildTreeFromFile(char* filePath, int* numOfInstruments){
+    /// this function creates and returns a binary search tree from a file
     InstrumentTree tr;
     int id = 0;
     char str[MAX_LINE_LENGTH];

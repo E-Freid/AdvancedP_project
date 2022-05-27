@@ -162,12 +162,11 @@ void printConcert(Concert* concert) {
         printf("Could not find musicians for the concert %s\n", concert->name);
 
     else {
-        printf("Concert info: \n");
-        printf("Concert name: %s\n", concert->name);
-        printf("Concert date and time: %02d %02d %04d %02d:%02d \n", date->day, date->month, date->year,
+        printf("%s ", concert->name);
+        printf("%02d %02d %04d %02d:%02d: ", date->day, date->month, date->year,
                (int)date->hour, getMinutes(date->hour));
         printInstrumentsList(&concert->instruments, &totalPrice);
-        printf("Concert's total price: %f\n", totalPrice);
+        printf(" Total Cost: %d.\n", (int)totalPrice);
     }
 }
 
@@ -175,11 +174,13 @@ void printInstrumentsList(CIList* instrumentsList, float* totalPrice) {
     CIListNode* cur = instrumentsList->head;
     ConcertInstrument* curInstrument;
 
-    printf("Musicians list for the concert: \n");
-
     while(cur != NULL) {
         curInstrument = &cur->instrument;
         printBookedMusicians(curInstrument->bookedMusicians, curInstrument->num, curInstrument->name, curInstrument->inst, totalPrice);
+        if(cur->next == NULL)
+            printf(". ");
+        else
+            printf(", ");
         cur = cur->next;
     }
 }
@@ -191,7 +192,9 @@ void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* 
         price = getMusicianInstrumentPrice(bookedMusicians[i], instrumentId);
         *totalPrice += price;
         printMusicianName(bookedMusicians[i]->name, bookedMusicians[i]->logSize);
-        printf("%s %f\n", instrumentName, price);
+        printf("- %s (%d)", instrumentName, (int)price);
+        if(i != (numOfMusicians - 1))
+            printf(", ");
     }
 }
 

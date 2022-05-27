@@ -11,10 +11,8 @@ int main(int argc, char* argv[]){
     Musician** MusiciansGroup = getMusiciansListFromFile(argv[2], &numOfMusicians, &tr);
 
     Sizes* musiCollSizes = createMusiCollSizesArr(numOfInstruments, MusiciansGroup, numOfMusicians);
-    Musician*** MusiciansCollection = createMusiCollArr(musiCollSizes, numOfInstruments, MusiciansGroup, numOfMusicians);
-
-    printTreeInOrderRec(tr.root);
-    printMusiCollArrWithId(MusiciansCollection, numOfInstruments, musiCollSizes);
+    Musician*** MusiciansCollection = createMusiCollArr(musiCollSizes,numOfInstruments
+                                                        , MusiciansGroup, numOfMusicians);
 
     getConcerts(MusiciansCollection, musiCollSizes, MusiciansGroup, numOfMusicians, &tr);
 
