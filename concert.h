@@ -46,10 +46,17 @@ void resetMusiciansStatus(Musician** musicians, int size);
 Concert* getConcertFromLine(char* line, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
 void printConcerts(Concert** concerts, int numOfConcerts);
 void printInstrumentsList(CIList* instrumentsList);
-void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId);
+void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId, float* totalPrice);
 void printMusicianName(char** name, int size);
 float getMusicianInstrumentPrice(Musician* musician, unsigned short instrumentId);
 int getMinutes(float hour);
+
+// Sorting Utils
+void sortMusiciansByPrice(Musician** musicians, int size, int instrumentId, int importance);
+void merge(Musician** arr1, Musician** arr2, int size1, int size2, int instrumentId, int importance, Musician** dest);
+void mergeHandler(Musician** src, Musician** dest, int* srcInd, int* destInd);
+void copyArr(Musician** dest, Musician** src, int size);
+int comparePrices(Musician* mus1, Musician* mus2, unsigned short instrumentId, int importance);
 
 // List Methods
 CIListNode* createNewCiListNode(ConcertInstrument instrument, CIListNode* next);

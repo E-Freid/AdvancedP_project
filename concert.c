@@ -8,8 +8,6 @@ Concert** getConcerts(Musician*** musiColl, Sizes* sizes,Musician** MusiciansGro
     Concert** concerts = (Concert**)malloc(sizeof(Concert*) * phySize);
     checkAllocation(concerts);
 
-//    BOOL finishedConcerts = FALSE;
-
     while ((line = getLineFromUser()) != NULL) {
         if(concertsSize == phySize){
             phySize *= 2;
@@ -136,10 +134,10 @@ BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musicia
         token = strtok(NULL, deli);         // get importance of instrument
         sscanf(token, "%c", &instrument.importance);
 
-        /// sort here musicollections[instrument.inst] according to instrument.importance
+        sortMusiciansByPrice(musiColl[instrument.inst], sizes[instrument.inst].phySize, instrument.inst, instrument.importance);
 
         if(instrument.inst != NOT_FOUND) {
-            concertIsPossible = getMusicinsForInstrument(&instrument, musiColl[instrument.inst],
+            concert->isConcertPossible = getMusicinsForInstrument(&instrument, musiColl[instrument.inst],
                                                          sizes[instrument.inst].phySize, instrument.num);
         }
         else
@@ -194,7 +192,7 @@ void printConcerts(Concert** concerts, int numOfConcerts) {
 
         else {
             printf("Concert name: %s\n", curConcert->name);
-            printf("Concert time: %02d %02d %04d %02d:%02d \n", date->day, date->month, date->year,
+            printf("Concert date and time: %02d %02d %04d %02d:%02d \n", date->day, date->month, date->year,
                    (int)date->hour, getMinutes(date->hour));
             printInstrumentsList(&curConcert->instruments);
         }
@@ -204,22 +202,28 @@ void printConcerts(Concert** concerts, int numOfConcerts) {
 void printInstrumentsList(CIList* instrumentsList) {
     CIListNode* cur = instrumentsList->head;
     ConcertInstrument* curInstrument;
+    float totalPrice = 0;
+
     printf("Musicians list for the concert: \n");
+
     while(cur != NULL) {
         curInstrument = &cur->instrument;
-        printBookedMusicians(curInstrument->bookedMusicians, curInstrument->num, curInstrument->name, curInstrument->inst);
+        printBookedMusicians(curInstrument->bookedMusicians, curInstrument->num, curInstrument->name, curInstrument->inst, &totalPrice);
         cur = cur->next;
     }
 }
 
-void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId) {
+void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId, float* totalPrice) {
     float price;
 
     for (int i = 0; i < numOfMusicians; ++i) {
         price = getMusicianInstrumentPrice(bookedMusicians[i], instrumentId);
+        *totalPrice += price;
         printMusicianName(bookedMusicians[i]->name, bookedMusicians[i]->logSize);
         printf("%s %f\n", instrumentName, price);
     }
+
+    printf("Concert's total price: %f", *totalPrice);
 }
 
 void printMusicianName(char** name, int size) {
@@ -249,6 +253,76 @@ int getMinutes(float hour) {
     float decimalPart = hour - (float)intPart;
 
     return decimalPart * 60;
+}
+
+// Sort Utils
+void sortMusiciansByPrice(Musician** musicians, int size, int instrumentId, int importance) { // Merge sort implementation
+    if(size <= 1)
+        return;
+    else {
+        int m = size / 2;
+
+        sortMusiciansByPrice(musicians, m, instrumentId, importance);
+        sortMusiciansByPrice(musicians + m, size - m, instrumentId, importance);
+
+        Musician** tmpArr = (Musician**)malloc(sizeof(Musician*) * size);
+        checkAllocation(tmpArr);
+
+        merge(musicians, musicians + m, m, size - m, instrumentId, importance, tmpArr);
+        copyArr(musicians, tmpArr, size); // copy values from tmpArr to arr
+        free(tmpArr);
+    }
+}
+
+void merge(Musician** arr1, Musician** arr2, int size1, int size2, int instrumentId, int importance, Musician** dest) {
+    int i1 = 0, i2 = 0, iRes = 0;
+
+    while(i1 < size1 && i2 < size2) {
+        if(comparePrices(arr1[i1], arr2[i2], instrumentId, importance) > 0) {
+            mergeHandler(arr1, dest, &i1, &iRes);
+        } else {
+            mergeHandler(arr2, dest, &i2, &iRes);
+        }
+    }
+    while (i1 < size1) {
+        mergeHandler(arr1, dest, &i1, &iRes);
+    }
+    while (i2 < size2) {
+        mergeHandler(arr2, dest, &i2, &iRes);
+    }
+}
+
+void mergeHandler(Musician** src, Musician** dest, int* srcInd, int* destInd) {
+    int i = *srcInd;
+    int iRes = *destInd;
+
+    dest[iRes] = src[i];
+    *srcInd = ++i;
+    *destInd = ++iRes;
+}
+
+void copyArr(Musician** dest, Musician** src, int size) {
+    int i;
+
+    for (i = 0; i < size; i++) {
+        dest[i] = src[i];
+    }
+}
+
+int comparePrices(Musician* mus1, Musician* mus2, unsigned short instrumentId, int importance) {
+   float price1, price2, res;
+
+   price1 = getMusicianInstrumentPrice(mus1, instrumentId);
+   price2 = getMusicianInstrumentPrice(mus2, instrumentId);
+
+   res = price1 - price2;
+
+   if(res > 0) {
+       return importance == '1' ? 1 : -1;
+   }
+
+   else
+       return importance == '1' ? -1 : 1;
 }
 
 // List Methods
