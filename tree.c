@@ -50,7 +50,7 @@ void freeTreeRec(TreeNode* root){
 }
 
 InstrumentTree buildTreeFromFile(char* filePath, int* numOfInstruments){
-    /// this function creates and returns a binary search tree from a file
+    /// this function creates and returns a binary search tree from a instruments txt file
     InstrumentTree tr;
     int id = 0;
     char str[MAX_LINE_LENGTH];
@@ -77,11 +77,13 @@ InstrumentTree buildTreeFromFile(char* filePath, int* numOfInstruments){
 }
 
 void insertStrToBinaryTree(InstrumentTree* tr, char* str, int id){
+    /// this function inserts a new instrument into the tree
     TreeNode* newNode = createTreeNode(str, id, NULL, NULL);
     InsertNodeToBST(tr, newNode);
 }
 
 void InsertNodeToBST(InstrumentTree* tr, TreeNode* newNode) {
+    /// this function uses binary search to insert a new Node into the tree
     int cmpr;
     TreeNode *root = tr->root;
     BOOL placedNode = FALSE;
@@ -95,7 +97,7 @@ void InsertNodeToBST(InstrumentTree* tr, TreeNode* newNode) {
         cmpr = strcmp(root->instrument, newNode->instrument);
         if (cmpr < 0) {         // newNode is smaller
             if (!root->right) {
-                root->right = newNode;          //  ptr is NULL, found location
+                root->right = newNode;          //  ptr is NULL, found location for new Node
                 placedNode = TRUE;
             } else
                 root = root->right;     // ptr not NULL, go right
