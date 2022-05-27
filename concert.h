@@ -40,16 +40,17 @@ char* getLineFromUser();
 char* getNameAndDate(Concert* concert, char* line);
 BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
 BOOL getMusicinsForInstrument(ConcertInstrument* instrument, Musician** musicianArr, int size, int numOfmusi);
-Concert** getConcerts(Musician*** musiColl, Sizes* sizes,Musician** MusiciansGroup, int numOfMusicians,
-                      InstrumentTree* tree, int* numOfConcerts);
+void getConcerts(Musician*** musiColl, Sizes* sizes,Musician** MusiciansGroup, int numOfMusicians, InstrumentTree* tree);
 void resetMusiciansStatus(Musician** musicians, int size);
-Concert* getConcertFromLine(char* line, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
-void printConcerts(Concert** concerts, int numOfConcerts);
-void printInstrumentsList(CIList* instrumentsList);
-void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId, float* totalPrice);
-void printMusicianName(char** name, int size);
+Concert getConcertFromLine(char* line, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes);
 float getMusicianInstrumentPrice(Musician* musician, unsigned short instrumentId);
 int getMinutes(float hour);
+
+// Printing
+void printConcert(Concert* concerts);
+void printInstrumentsList(CIList* instrumentsList, float* totalPrice);
+void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId, float* totalPrice);
+void printMusicianName(char** name, int size);
 
 // Sorting Utils
 void sortMusiciansByPrice(Musician** musicians, int size, int instrumentId, int importance);
@@ -65,7 +66,7 @@ void addCiListNodeToEndList(CIList* lst, CIListNode* newTail);
 void makeEmptyConcertList(CIList* lst);
 
 // Free helpers
-void freeConcerts(Concert** concerts, int size);
+void freeConcertData(Concert* concerts);
 void freeConcertInstrumentsList(CIListNode* head);
 
 

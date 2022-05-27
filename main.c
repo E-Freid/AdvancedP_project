@@ -5,7 +5,6 @@
 int main(int argc, char* argv[]){
     int numOfMusicians;
     int numOfInstruments;
-    int numOfConcerts;
 
     numOfMusicians = numOfInstruments = 0;
     InstrumentTree tr = buildTreeFromFile(argv[1], &numOfInstruments);
@@ -17,13 +16,11 @@ int main(int argc, char* argv[]){
     printTreeInOrderRec(tr.root);
     printMusiCollArrWithId(MusiciansCollection, numOfInstruments, musiCollSizes);
 
-    Concert** concerts = getConcerts(MusiciansCollection, musiCollSizes, MusiciansGroup, numOfMusicians, &tr, &numOfConcerts);
-    printConcerts(concerts, numOfConcerts);
+    getConcerts(MusiciansCollection, musiCollSizes, MusiciansGroup, numOfMusicians, &tr);
 
     freeTreeRec(tr.root);
     freePointersMusiciansArr(MusiciansGroup, numOfMusicians);
     freeMusiCollArr(MusiciansCollection, numOfInstruments);
     free(musiCollSizes);
-    freeConcerts(concerts, numOfConcerts);
     return 0;
 }
