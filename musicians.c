@@ -179,6 +179,8 @@ void freeMusiCollArr(Musician*** musiColl, int size){       // assume musicians 
 
 // MusicianCollation methods
 Sizes* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusicians){
+    /// this function creates and returns a Sizes array representing how many musicians play the Sies[i]
+    /// instrument
     int i;
     Sizes* sizesArr = (Sizes*) calloc(arrSize, sizeof(Sizes));      // init array with 0's
     checkAllocation(sizesArr);
@@ -189,6 +191,7 @@ Sizes* createMusiCollSizesArr(int arrSize, Musician** musiGroup, int numOfMusici
 }
 
 void addSizesToArr(Sizes* sizesArr, Musician* musi){
+    /// this function iterates through the musician's instruments, and updates the amount of players in the Sizes array
     MusicianPriceInstrument* head = musi->instruments.head;
     while(head != NULL){
         sizesArr[head->insId].phySize++;
@@ -197,6 +200,8 @@ void addSizesToArr(Sizes* sizesArr, Musician* musi){
 }
 
 Musician*** createMusiCollArr(Sizes* sizesArr, int size, Musician** musiGroup, int numOfMusi){
+    /// this function creates the musicians collection array and returns it. the musicians in musiColl[i] know to
+    /// the play the instrument whose Id = i
     int i;
     Musician*** musiColl = (Musician***) malloc(sizeof(Musician**) * size);
     checkAllocation(musiColl);
@@ -208,6 +213,8 @@ Musician*** createMusiCollArr(Sizes* sizesArr, int size, Musician** musiGroup, i
 }
 
 void allocateMusiArrays(Musician*** musiColl, Sizes* sizesArr, int size){
+    /// this function allocates enough space in each array inside of musiColl according to the amount of players in
+    /// sizesArr
     int i;
     for(i=0;i<size;i++){
         musiColl[i] = (Musician**) malloc(sizeof(Musician*) * (sizesArr[i].phySize));
@@ -216,22 +223,14 @@ void allocateMusiArrays(Musician*** musiColl, Sizes* sizesArr, int size){
 }
 
 void addPtrsToMusiCollArr(Musician*** musiColl, Sizes* sizesArr, Musician* musiPtr){
+    /// this function iterates through the musicians instruments, and adds a ptr to the musician according to the
+    /// instruments he knows to play.
     MusicianPriceInstrument* mpiNode = musiPtr->instruments.head;
     int instrumentId;
     while(mpiNode != NULL){
         instrumentId = mpiNode->insId;
-        musiColl[instrumentId][(sizesArr[instrumentId].logSize)] = musiPtr;
+        musiColl[instrumentId][(sizesArr[instrumentId].logSize)] = musiPtr; // add a ptr to the musician
         sizesArr[instrumentId].logSize++;
         mpiNode = mpiNode->next;
-    }
-}
-
-void printMusiCollArrWithId(Musician*** musiCol, int size, Sizes* sizesArr){
-    int i,j;
-    for(i=0;i<size;i++){
-        printf("id: %d \n", i);
-        for(j=0;j<sizesArr[i].phySize;j++){
-            puts(musiCol[i][j]->name[0]);
-        }
     }
 }
