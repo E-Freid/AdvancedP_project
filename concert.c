@@ -1,10 +1,11 @@
 #include "concert.h"
 
 void getConcerts(Musician*** musiColl, Sizes* sizes,Musician** MusiciansGroup, int numOfMusicians, InstrumentTree* tree) {
+    /// this function gets concert information from the user and then tries to gather musicians
     char* line;
     Concert concert;
 
-    while ((line = getLineFromUser()) != NULL) {
+    while ((line = getLineFromUser()) != NULL) {        // while not finished
         concert = getConcertFromLine(line, tree, musiColl, sizes);
         printConcert(&concert);
         resetMusiciansStatus(MusiciansGroup, numOfMusicians);
@@ -13,6 +14,7 @@ void getConcerts(Musician*** musiColl, Sizes* sizes,Musician** MusiciansGroup, i
 }
 
 Concert getConcertFromLine(char* line, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes) {
+    /// this function gets the information about the concert from the user and returns a Concert struct
     char* token;
     Concert concert;
 
@@ -25,6 +27,7 @@ Concert getConcertFromLine(char* line, InstrumentTree* tree, Musician*** musiCol
 }
 
 char* getLineFromUser(){
+    /// this function takes input from the user and returns a str
     int ch;
     char* line;
 
@@ -33,7 +36,7 @@ char* getLineFromUser(){
     line = (char*) malloc(sizeof(char) * phySize);
     checkAllocation(line);
 
-    while((ch = getchar()) != '\n' && ch != EOF){
+    while((ch = getchar()) != '\n' && ch != EOF){ // while not finished reading the line
         if(logSize == phySize){
             phySize *= 2;
             line = (char*) realloc(line, sizeof(char) * phySize);
@@ -42,7 +45,7 @@ char* getLineFromUser(){
         line[logSize] = ch;     // get char into the str
         logSize++;
     }
-    if(logSize == 0){
+    if(logSize == 0){   // empty line
         free(line);
         line = NULL;
     }
@@ -56,6 +59,7 @@ char* getLineFromUser(){
 }
 
 char* getNameAndDate(Concert* concert, char* line) {
+    /// this function takes the str and gets the name and date information
     int nameLen,i;
     char deli[] = " ";
     char* token;
@@ -64,7 +68,7 @@ char* getNameAndDate(Concert* concert, char* line) {
     token = strtok(line, deli);
 
     nameLen = strlen(token);    // get the name
-    concert->name = (char*) malloc(sizeof(char) * nameLen + 1);
+    concert->name = (char*) malloc(sizeof(char) * (nameLen + 1));
     checkAllocation(concert->name);
     strcpy(concert->name, token);
 
@@ -92,6 +96,8 @@ char* getNameAndDate(Concert* concert, char* line) {
 }
 
 BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musician*** musiColl, Sizes* sizes){
+    /// this function gets the instruments information from the str and tries to add musicians to the concert
+    /// it returns true if found enough musicians for all the instruments. else, false.
     ConcertInstrument instrument;
     int instrumentNameLen;
     char deli[] = " ";
@@ -105,26 +111,24 @@ BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musicia
 
         instrument.inst = findInsId(tree, instrument.name); // get instrument ID
 
-        if(instrument.inst == NOT_FOUND){
+        token = strtok(NULL, deli);             // get num of players on specific instrument
+        sscanf(token, "%d", &instrument.num);
+
+        token = strtok(NULL, deli);         // get importance of instrument
+        sscanf(token, "%c", &instrument.importance);
+
+        if(instrument.inst == NOT_FOUND){   // instrument does not exist
             concertIsPossible = FALSE;
             instrument.bookedMusicians = NULL;
         }
 
-        else {
-            token = strtok(NULL, deli);             // get num of players on specific instrument
-            sscanf(token, "%d", &instrument.num);
-
-            token = strtok(NULL, deli);         // get importance of instrument
-            sscanf(token, "%c", &instrument.importance);
+        else {      // instrument exists, find musicians
 
             sortMusiciansByPrice(musiColl[instrument.inst], sizes[instrument.inst].phySize, instrument.inst, instrument.importance);
 
-            if(instrument.inst != NOT_FOUND) {
-                concertIsPossible = getMusicinsForInstrument(&instrument, musiColl[instrument.inst],
-                                                                      sizes[instrument.inst].phySize, instrument.num);
-            }
-            else
-                instrument.bookedMusicians = NULL;
+            concertIsPossible = getMusicinsForInstrument(&instrument, musiColl[instrument.inst],
+                                                                  sizes[instrument.inst].phySize, instrument.num);
+
         }
 
         addDataConcertList(concert,instrument);
@@ -135,19 +139,21 @@ BOOL getInstruments(Concert* concert, char* token, InstrumentTree* tree, Musicia
 }
 
 BOOL getMusicinsForInstrument(ConcertInstrument* instrument, Musician** musicianArr, int size, int numOfmusi){
+    /// this function gathers musicians to play on the instrument and returns True if the process was successful.
+    /// else, false.
     int i;
     int bookedArrInd;
     instrument->bookedMusicians = (Musician**) malloc(sizeof(Musician*) * numOfmusi);
     checkAllocation(instrument->bookedMusicians);
     for(i=bookedArrInd=0;i<size && bookedArrInd<numOfmusi;i++){
         if(musicianArr[i]->isTakenAlready == FALSE) {
-            instrument->bookedMusicians[bookedArrInd] = musicianArr[i];
+            instrument->bookedMusicians[bookedArrInd] = musicianArr[i]; // add musician and change status to taken.
             musicianArr[i]->isTakenAlready = TRUE;
             bookedArrInd++;
         }
     }
 
-    if(bookedArrInd < numOfmusi){
+    if(bookedArrInd < numOfmusi){  // not enough musicians for the instrument
         return FALSE;
     }
 
@@ -155,6 +161,7 @@ BOOL getMusicinsForInstrument(ConcertInstrument* instrument, Musician** musician
 }
 
 void printConcert(Concert* concert) {
+    /// this function prints the concert information
     Date* date = &concert->date_of_concert;
     float totalPrice = 0;
 
@@ -171,12 +178,14 @@ void printConcert(Concert* concert) {
 }
 
 void printInstrumentsList(CIList* instrumentsList, float* totalPrice) {
+    /// this function prints the musicians and instruments information
     CIListNode* cur = instrumentsList->head;
     ConcertInstrument* curInstrument;
 
     while(cur != NULL) {
         curInstrument = &cur->instrument;
-        printBookedMusicians(curInstrument->bookedMusicians, curInstrument->num, curInstrument->name, curInstrument->inst, totalPrice);
+        printBookedMusicians(curInstrument->bookedMusicians, curInstrument->num,
+                                curInstrument->name, curInstrument->inst, totalPrice);
         if(cur->next == NULL)
             printf(". ");
         else
@@ -186,6 +195,7 @@ void printInstrumentsList(CIList* instrumentsList, float* totalPrice) {
 }
 
 void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* instrumentName, int instrumentId, float* totalPrice) {
+    /// this function prints the musicians playing on a specific instrument and their prices
     float price;
 
     for (int i = 0; i < numOfMusicians; ++i) {
@@ -199,12 +209,14 @@ void printBookedMusicians(Musician** bookedMusicians, int numOfMusicians, char* 
 }
 
 void printMusicianName(char** name, int size) {
+    /// this function prints the musician full name
     for (int i = 0; i < size; ++i) {
         printf("%s ", name[i]);
     }
 }
 
 float getMusicianInstrumentPrice(Musician* musician, unsigned short instrumentId) {
+    /// this function returns the price the musician takes for playing the instrument
     BOOL isFound = FALSE;
     float price = 0;
     MusicianPriceInstrument* cur = musician->instruments.head;
@@ -221,14 +233,15 @@ float getMusicianInstrumentPrice(Musician* musician, unsigned short instrumentId
 }
 
 int getMinutes(float hour) {
+    /// this function calculates and returns the minutes
     int intPart = (int)hour;
     float decimalPart = hour - (float)intPart;
 
-    return decimalPart * 60;
+    return decimalPart * HOUR;
 }
 
-/* Function that resets the isTakenAlready flag for each musician to false before getting new concert data */
 void resetMusiciansStatus(Musician** musicians, int size) {
+    /// Function that resets the isTakenAlready flag for each musician to false before getting new concert data
     for (int i = 0; i < size; ++i) {
         musicians[i]->isTakenAlready = FALSE;
     }
@@ -236,6 +249,7 @@ void resetMusiciansStatus(Musician** musicians, int size) {
 
 // Sort Utils
 void sortMusiciansByPrice(Musician** musicians, int size, int instrumentId, int importance) { // Merge sort implementation
+    /// this function sorts the musicians ptr arrays according to the price and importance
     if(size <= 1)
         return;
     else {
@@ -254,6 +268,7 @@ void sortMusiciansByPrice(Musician** musicians, int size, int instrumentId, int 
 }
 
 void merge(Musician** arr1, Musician** arr2, int size1, int size2, int instrumentId, int importance, Musician** dest) {
+    /// this function merges 2 arrays of musicians ptr into 1 array according to the prices and importance
     int i1 = 0, i2 = 0, iRes = 0;
 
     while(i1 < size1 && i2 < size2) {
@@ -272,6 +287,7 @@ void merge(Musician** arr1, Musician** arr2, int size1, int size2, int instrumen
 }
 
 void mergeHandler(Musician** src, Musician** dest, int* srcInd, int* destInd) {
+    /// this function copies a musician ptr from src to dest. according to the indexes.
     int i = *srcInd;
     int iRes = *destInd;
 
@@ -281,6 +297,7 @@ void mergeHandler(Musician** src, Musician** dest, int* srcInd, int* destInd) {
 }
 
 void copyArr(Musician** dest, Musician** src, int size) {
+    /// this function copies src into dest
     int i;
 
     for (i = 0; i < size; i++) {
@@ -289,6 +306,7 @@ void copyArr(Musician** dest, Musician** src, int size) {
 }
 
 int comparePrices(Musician* mus1, Musician* mus2, unsigned short instrumentId, int importance) {
+    /// this function compares prices according to the importance and returns a positive or a negative number accordingly.
    float price1, price2, res;
 
    price1 = getMusicianInstrumentPrice(mus1, instrumentId);
@@ -306,11 +324,13 @@ int comparePrices(Musician* mus1, Musician* mus2, unsigned short instrumentId, i
 
 // List Methods
 void addDataConcertList(Concert* concert, ConcertInstrument instrument){
+    /// this function adds data to the end of the instruments list in Concert
     CIListNode* node = createNewCiListNode(instrument, NULL);
     addCiListNodeToEndList(&concert->instruments, node);
 }
 
 CIListNode* createNewCiListNode(ConcertInstrument instrument, CIListNode* next){
+    /// this function creates and returns a new concert instrument list node
     CIListNode* node = (CIListNode*) malloc(sizeof(CIListNode));
     checkAllocation(node);
     node->instrument = instrument;
@@ -319,6 +339,7 @@ CIListNode* createNewCiListNode(ConcertInstrument instrument, CIListNode* next){
 }
 
 void addCiListNodeToEndList(CIList* lst, CIListNode* newTail){
+    /// this function adds a new list node to the end of the list
     if(lst->head == NULL)
         lst->head = lst->tail = newTail;
     else{
@@ -328,16 +349,19 @@ void addCiListNodeToEndList(CIList* lst, CIListNode* newTail){
 }
 
 void makeEmptyConcertList(CIList* lst){
+    /// this function makes the list an empty list
     lst->head = lst->tail = NULL;
 }
 
 // Free helpers
 void freeConcertData(Concert* concert) {
+    /// this function frees the data inside of the concert.
     free(concert->name);
     freeConcertInstrumentsList(concert->instruments.head);
 }
 
 void freeConcertInstrumentsList(CIListNode* head){
+    /// this function frees the concert instrument list
     if(head == NULL)
         return;
     freeConcertInstrumentsList(head->next);
