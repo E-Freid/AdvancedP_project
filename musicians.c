@@ -1,5 +1,8 @@
 #include "musicians.h"
 
+/* This Function gets a name of a file with musicians data and also the number of musicians and instruments tree
+ * The function reading the musicians data from the file and returns it in an array of pointers to Musician instances.
+ * */
 Musician** getMusiciansListFromFile(char* fileName, int* size, InstrumentTree* tr) {
     int logSize = 0, phySize = 2;
     char currLine[MAX_LINE_LENGTH];
@@ -35,6 +38,9 @@ Musician** getMusiciansListFromFile(char* fileName, int* size, InstrumentTree* t
     return musiciansArr;
 }
 
+/* Function that gets a string that includes musician data and using strtok to extract the relevant data and save it inside Musician instance
+ * The function returns a pointer to Musician.
+ * */
 Musician* getMusicianFromStr(char* str, InstrumentTree* tr) {
     char *token;
     int instrumentId = NOT_FOUND;
@@ -66,12 +72,15 @@ Musician* getMusicianFromStr(char* str, InstrumentTree* tr) {
 
     musician->name = (char**)realloc(musician->name, sizeof(char*) * musician->logSize);
     checkAllocation(musician->name);
+
     musician->phySize = musician->logSize;
     musician->isTakenAlready = FALSE;
 
     return musician;
 }
 
+
+/* Function that gets a pointer to an empty Musician instance and initialize his data fields */
 void initializeMusician(Musician* musician) {
     musician->logSize = 0;
     musician->phySize = 2;
